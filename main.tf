@@ -8,6 +8,20 @@ resource "azurerm_resource_group" "terraform_demo_del1" {
   location = "Norway East"
 }
 
+terraform {   
+  backend "azurerm" {
+    resource_group_name = "tf_resourceGroup_blobstore2"
+    storage_account_name = "tfstorageaccblobstore2"
+    container_name = "tfstateblobstore2"
+    key = "terraform.tfstate"
+  }  
+}
+
+variable "imagebuild" {
+  type        = string  
+  description = "Latest image build"
+}
+
 resource "azurerm_container_group" "terraform_cg_demo_del1"{
   name = "weatherapidel1"
   location = azurerm_resource_group.terraform_demo_del1.location
@@ -18,7 +32,7 @@ resource "azurerm_container_group" "terraform_cg_demo_del1"{
 
   container {
     name = "weatherapidel1"
-    image = "kabsoft/del1_weatherapi"
+    image = "kabsoft/del1_weatherapi:${var.imagebuild}"
     cpu = "1"
     memory = "1"
 
